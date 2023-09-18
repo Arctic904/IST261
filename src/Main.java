@@ -1,11 +1,12 @@
-import psu.edu.ist.test.ModelTest;
+import psu.edu.ist.test.TestHarness;
 
 public class Main {
     public static void main(String[] args) {
 
         System.out.println("Hello world!");
 
-        ModelTest.main();
+        TestHarness.IncidentTest();
+        TestHarness.IncidentTypeTest();
     }
 
 

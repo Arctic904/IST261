@@ -1,7 +1,5 @@
 package psu.edu.ist.model;
 
-import java.util.ArrayList;
-
 public class Incident {
     private String Title;
     private String Description;
@@ -15,12 +13,12 @@ public class Incident {
         CreatedBy = createdBy;
         Severity = severity;
     }
-    public Incident(String title, String description, User createdBy, Severity severity, IncidentType type) {
+    public Incident(String title, String description, User createdBy, IncidentType type) {
         Title = title;
         Description = description;
         CreatedBy = createdBy;
-        Severity = severity;
         Type = type;
+        Severity = type.getSeverity();
     }
 
     public String getTitle() {
@@ -47,11 +45,11 @@ public class Incident {
         CreatedBy = createdBy;
     }
 
-    public psu.edu.ist.model.Severity getSeverity() {
+    public Severity getSeverity() {
         return Severity;
     }
 
-    public void setSeverity(psu.edu.ist.model.Severity severity) {
+    public void setSeverity(Severity severity) {
         Severity = severity;
     }
 
@@ -61,6 +59,7 @@ public class Incident {
 
     public void setType(IncidentType type) {
         Type = type;
+        Severity = type.getSeverity();
     }
 
     @Override
