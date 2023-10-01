@@ -1,5 +1,6 @@
 package psu.edu.ist.model;
 
+import java.io.File;
 import java.util.Date;
 
 public class Note {

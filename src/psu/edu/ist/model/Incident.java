@@ -1,17 +1,21 @@
 package psu.edu.ist.model;
 
+import java.util.ArrayList;
+
 public class Incident {
     private String Title;
     private String Description;
     private User CreatedBy;
     private Severity Severity;
     private IncidentType Type;
+    private ArrayList<Note> Notes;
 
     public Incident(String title, String description, User createdBy, Severity severity) {
         Title = title;
         Description = description;
         CreatedBy = createdBy;
         Severity = severity;
+        Notes = new ArrayList<>();
     }
     public Incident(String title, String description, User createdBy, IncidentType type) {
         Title = title;
@@ -19,7 +23,9 @@ public class Incident {
         CreatedBy = createdBy;
         Type = type;
         Severity = type.getSeverity();
+        Notes = new ArrayList<>();
     }
+
 
     public String getTitle() {
         return Title;
@@ -62,6 +68,14 @@ public class Incident {
         Severity = type.getSeverity();
     }
 
+    public ArrayList<Note> getNotes() {
+        return Notes;
+    }
+
+    public void setNotes(ArrayList<Note> notes) {
+        Notes = notes;
+    }
+
     @Override
     public String toString() {
         return "Incident{" +
@@ -70,6 +84,7 @@ public class Incident {
                 ", CreatedBy=" + CreatedBy +
                 ", Severity=" + Severity +
                 ", Type=" + Type +
+                ", Notes=" + Notes +
                 '}';
     }
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 class NoteTest {
-    User TestUser = new User("Bob", "Test@example.com", "8149764345", Access.USER);
+    User TestUser = new User("Bob", "Test@example.com", "8149764345");
     Date InitialCreation = new Date();
     Note TestNote = new Note("Test", TestUser, InitialCreation, "Test Note Content");
     @Test
@@ -31,7 +31,7 @@ class NoteTest {
 
     @Test
     void setCreatedBy() {
-        User NewTestUser = new User("Ron", "Ron@example.com", "8416489646", Access.ADMIN);
+        User NewTestUser = new User("Ron", "Ron@example.com", "8416489646");
         TestNote.setCreatedBy(NewTestUser);
         assertEquals(NewTestUser, TestNote.getCreatedBy());
     }

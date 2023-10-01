@@ -8,7 +8,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
-    User bob = new User("Bob", "test@test.com", "8145264978", Access.USER);
+    User bob = new User("Bob", "test@test.com", "8145264978");
     Board test = new Board("Test", new ArrayList<>(Arrays.asList(bob)), new ArrayList<Category>(Arrays.asList(new Category("Test", new ArrayList<>(Arrays.asList(new Incident("TestIncident", "This is a test", bob, Severity.MEDIUM))), 60, "This is another test"))));
 
     @org.junit.jupiter.api.Test
@@ -30,7 +30,7 @@ class BoardTest {
     @org.junit.jupiter.api.Test
     void setUsers() {
         ArrayList<User> newUsers = test.getUsers();
-        newUsers.add(new User("Ron", "test2@test.com", "8161558465", Access.ADMIN));
+        newUsers.add(new User("Ron", "test2@test.com", "8161558465"));
         test.setUsers(newUsers);
         assertEquals(newUsers, test.getUsers());
     }
