@@ -1,6 +1,7 @@
 package psu.edu.ist.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Incident {
     private String Title;
@@ -74,6 +75,14 @@ public class Incident {
 
     public void setNotes(ArrayList<Note> notes) {
         Notes = notes;
+    }
+
+    public void addNote(Note note){
+        this.Notes.add(note);
+    }
+
+    public void addNote(String title, Date created, User user, String content){
+        this.Notes.add(new Note(title, user, created, content));
     }
 
     @Override

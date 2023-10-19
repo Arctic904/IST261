@@ -4,12 +4,14 @@ import psu.edu.ist.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     User bob = new User("Bob", "test@test.com", "8145264978");
-    Board test = new Board("Test", new ArrayList<>(Arrays.asList(bob)), new ArrayList<Category>(Arrays.asList(new Category("Test", new ArrayList<>(Arrays.asList(new Incident("TestIncident", "This is a test", bob, Severity.MEDIUM))), 60, "This is another test"))));
+    Board test = new Board("Test", new ArrayList<>(List.of(bob)), new ArrayList<Category>(List.of(new Category("Test", new ArrayList<>(List.of(new Incident("TestIncident", "This is a test", bob, Severity.MEDIUM))), 60, "This is another test"))));
 
     @org.junit.jupiter.api.Test
     void getName() {
@@ -24,7 +26,7 @@ class BoardTest {
 
     @org.junit.jupiter.api.Test
     void getUsers() {
-        assertEquals(new ArrayList<>(Arrays.asList(bob)), test.getUsers());
+        assertEquals(new ArrayList<>(Collections.singletonList(bob)), test.getUsers());
     }
 
     @org.junit.jupiter.api.Test
@@ -49,9 +51,9 @@ class BoardTest {
 
     @org.junit.jupiter.api.Test
     void setCategories() {
-        ArrayList<Category> cats = new ArrayList<Category>(Arrays.asList(new Category("Test", new ArrayList<>(Arrays.asList(new Incident("TestIncident", "This is a test", bob, Severity.MEDIUM))), 60, "This is another test")));
+        ArrayList<Category> cats = new ArrayList<Category>(List.of(new Category("Test", new ArrayList<>(List.of(new Incident("TestIncident", "This is a test", bob, Severity.MEDIUM))), 60, "This is another test")));
         Incident incident = new Incident("KTest2", "Incident", bob, Severity.MAINTENANCE);
-        cats.add(new Category("In Progress", new ArrayList<>(Arrays.asList(incident)), 40, "Bobs Problems"));
+        cats.add(new Category("In Progress", new ArrayList<>(List.of(incident)), 40, "Bobs Problems"));
         test.setCategories(cats);
         assertEquals(cats, test.getCategories());
     }
