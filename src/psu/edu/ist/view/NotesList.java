@@ -6,8 +6,9 @@ import psu.edu.ist.model.Note;
 import psu.edu.ist.model.User;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.time.Month;
 import java.util.Date;
+import java.util.List;
 
 public class NotesList extends JFrame{
     private JTextField titleTextInput;
@@ -21,10 +22,11 @@ public class NotesList extends JFrame{
     private JComboBox<User> userSelection;
     private JButton deleteBtn;
     private JButton quitBtn;
+    private JButton backBtn;
     private static final int FRAME_WIDTH = 500;
     private static final int FRAME_HEIGHT = 600;
     private final NoteController controller;
-    private ArrayList<User> users;
+    private List<User> users;
     public NotesList(NoteController controller){
         this.controller = controller;
         createComponents();
@@ -63,14 +65,22 @@ public class NotesList extends JFrame{
         return quitBtn;
     }
 
-    public void setUserSelection(ArrayList<User> Users) {
-        this.users = Users;
-        userSelection.removeAllItems();
-        Users.stream().forEach(user -> userSelection.addItem(user));
+    public JButton getBackBtn() {
+        return backBtn;
     }
 
-    public ArrayList<User> getUsers(){
+    public void setUserSelection(List<User> Users) {
+        this.users = Users;
+        userSelection.removeAllItems();
+        Users.forEach(user -> userSelection.addItem(user));
+    }
+
+    public List<User> getUsers(){
         return this.users;
+    }
+
+    public String getDate() {
+        return creationDateTextInput.getText();
     }
 
     public Note saveNote() {
@@ -88,7 +98,7 @@ public class NotesList extends JFrame{
         if(users.contains(user)){
             userSelection.setSelectedItem(user);
         } else {
-            ArrayList<User> updatedList = this.users;
+            List<User> updatedList = this.users;
             updatedList.add(user);
             setUserSelection(updatedList);
             userSelection.setSelectedItem(user);
@@ -98,12 +108,12 @@ public class NotesList extends JFrame{
 
     public void setNote(Note note){
         this.titleTextInput.setText(note.getTitle());
-        String dateString = (note.getCreationDate().getMonth()+1) + "/" + note.getCreationDate().getDay() + "/" + (note.getCreationDate().getYear()+1900);
+        String dateString = (note.getCreationDate().getMonth()+1) + "/" + note.getCreationDate().getDate() + "/" + (note.getCreationDate().getYear()+1900);
         this.creationDateTextInput.setText(dateString);
         if(users.contains(note.getCreatedBy())){
             userSelection.setSelectedItem(note.getCreatedBy());
         } else {
-            ArrayList<User> updatedList = this.users;
+            List<User> updatedList = this.users;
             updatedList.add(note.getCreatedBy());
             setUserSelection(updatedList);
             userSelection.setSelectedItem(note.getCreatedBy());

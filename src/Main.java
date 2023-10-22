@@ -1,3 +1,4 @@
+import psu.edu.ist.controller.ListController;
 import psu.edu.ist.controller.NoteController;
 import psu.edu.ist.model.Access;
 import psu.edu.ist.model.Incident;
@@ -14,7 +15,7 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-        NoteController controller = new NoteController();
+        new ListController();
     }
 
 

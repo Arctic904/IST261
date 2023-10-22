@@ -1,38 +1,30 @@
 package psu.edu.ist.controller;
 
-import psu.edu.ist.model.Incident;
-import psu.edu.ist.model.Note;
-import psu.edu.ist.model.Severity;
-import psu.edu.ist.model.User;
+import psu.edu.ist.model.*;
+import psu.edu.ist.view.NoteListView;
 import psu.edu.ist.view.NotesList;
 
 import javax.swing.*;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class NoteController {
     private NotesList view;
     private Incident parentIncident;
+    private ListController listController;
     private int idx;
 
-    public NoteController() {
-        User bob = new User("Bob", "bob@gmail.com", "1234567890");
-        User john = new User("John", "bob@gmail.com", "1234567890");
-        User rob = new User("Rob", "bob@gmail.com", "1234567890");
-        ArrayList<User> users = new ArrayList<>();
-        users.add(bob);
-        users.add(john);
-        users.add(rob);
-        Incident incident = new Incident("An Incident", "A test incident", bob, Severity.MEDIUM);
-        incident.addNote("First Note", new Date(), bob, "The first note");
-        incident.addNote("Update", new Date(), john, "An update to the first note");
-        incident.addNote("Final", new Date(), rob, "Fixed issue");
-        this.parentIncident = incident;
+    public NoteController(ListController listController, int selectedRow) {
+        this.parentIncident = listController.getParentIncident();
         this.view = new NotesList(this);
-        this.idx = 0;
-        this.view.setUserSelection(users);
+        this.idx = selectedRow;
+        this.view.setUserSelection(listController.getUsersList());
         this.view.setNote(this.parentIncident.getNotes().get(idx));
+        this.listController = listController;
         addActionListeners();
     }
 
@@ -47,17 +39,25 @@ public class NoteController {
         view.getNewUserBtn().addActionListener(this::NewUserBtnPressed);
         view.getDeleteBtn().addActionListener(this::DeleteBtnPressed);
         view.getQuitBtn().addActionListener(e -> System.exit(0));
+        view.getBackBtn().addActionListener(this::BackBtnPressed);
+    }
+
+    private void BackBtnPressed(ActionEvent actionEvent) {
+        //dispose the detail view
+        this.view.dispose();
+        //show the list view - access through list controller
+        listController.showListView();
     }
 
     private void DeleteBtnPressed(ActionEvent event) {
-        if(this.parentIncident.getNotes().size() == 0){
+        if(this.parentIncident.getNotes().isEmpty()){
             JOptionPane.showMessageDialog(this.view, "No entry to delete");
             return;
         }
         int oldIdx = idx;
         idx = 0;
         this.parentIncident.getNotes().remove(oldIdx);
-        if (this.parentIncident.getNotes().size() == 0) {
+        if (this.parentIncident.getNotes().isEmpty()) {
             view.setNote("", new Date(), this.view.getUsers().get(0), "");
             return;
         }
@@ -65,33 +65,22 @@ public class NoteController {
     }
 
     private void NextBtnPressed(ActionEvent event) {
-        int save = JOptionPane.showConfirmDialog(this.view, "Would you like to save the current note?");
-        if (save == 1) {
-            this.idx++;
-            if (idx >= this.parentIncident.getNotes().size()) {
-                idx = this.parentIncident.getNotes().size();
-                view.setNote("", new Date(), this.view.getUsers().get(0), "");
-                return;
-            }
-            Note newNote = this.parentIncident.getNotes().get(idx);
-            view.setNote(newNote.getTitle(), newNote.getCreationDate(), newNote.getCreatedBy(), newNote.getContent());
-        } else if(save == 2){
+        this.idx++;
+        if (idx >= this.parentIncident.getNotes().size()) {
+            idx = this.parentIncident.getNotes().size();
+            view.setNote("", new Date(), this.view.getUsers().get(0), "");
             return;
-        } else {
-            Note updated = view.saveNote();
-            this.parentIncident.getNotes().set(idx, updated);
-            this.idx++;
-            if (idx >= this.parentIncident.getNotes().size()) {
-                idx = this.parentIncident.getNotes().size();
-                view.setNote("", new Date(), this.view.getUsers().get(0), "");
-                return;
-            }
-            Note selected = this.parentIncident.getNotes().get(idx);
-            view.setNote(selected);
         }
+        Note newNote = this.parentIncident.getNotes().get(idx);
+        view.setNote(newNote.getTitle(), newNote.getCreationDate(), newNote.getCreatedBy(), newNote.getContent());
     }
 
     private void SaveBtnPressed(ActionEvent event) {
+        String date = view.getDate();
+        if(!validateDate(date)){
+            JOptionPane.showMessageDialog(this.view, "Invalid date");
+            return;
+        }
         Note updated = view.saveNote();
         if (idx >= this.parentIncident.getNotes().size()) {
             this.parentIncident.getNotes().add(updated);
@@ -103,26 +92,14 @@ public class NoteController {
     }
 
     private void PrevBtnPressed(ActionEvent event) {
-        if (idx == 0) {
-            JOptionPane.showMessageDialog(this.view, "You are already at the first entry");
+        this.idx--;
+        if (idx < 0) {
+            idx = 0;
+            JOptionPane.showMessageDialog(this.view, "Already at first note!");
             return;
         }
-        if (idx >= this.parentIncident.getNotes().size()) {
-            idx = this.parentIncident.getNotes().size();
-        }
-        idx--;
-        int save = JOptionPane.showConfirmDialog(this.view, "Would you like to save the current note?");
-        if (save == 1) {
-            Note selected = this.parentIncident.getNotes().get(idx);
-            view.setNote(selected);
-        } else if(save == 2){
-            idx++;
-        } else {
-            Note updated = view.saveNote();
-            this.parentIncident.getNotes().set(idx + 1, updated);
-            Note selected = this.parentIncident.getNotes().get(idx);
-            view.setNote(selected);
-        }
+        Note newNote = this.parentIncident.getNotes().get(idx);
+        view.setNote(newNote.getTitle(), newNote.getCreationDate(), newNote.getCreatedBy(), newNote.getContent());
     }
 
     private void NewUserBtnPressed(ActionEvent event){
@@ -130,8 +107,56 @@ public class NoteController {
         String email = JOptionPane.showInputDialog("What is the user's email?");
         String phone = JOptionPane.showInputDialog("What is the user's phone number?");
         User created = new User(name, email, phone);
-        ArrayList<User> users = this.view.getUsers();
+        List<User> users = this.view.getUsers();
         users.add(created);
         this.view.setUserSelection(users);
+    }
+
+    public void NewNote() {
+        idx = this.parentIncident.getNotes().size();
+        view.setNote("", new Date(), this.view.getUsers().get(0), "");
+    }
+
+    public void deleteNote(int selectedRow) {
+        if(this.parentIncident.getNotes().isEmpty()){
+            JOptionPane.showMessageDialog(this.view, "No entry to delete");
+            return;
+        }
+        this.parentIncident.getNotes().remove(selectedRow);
+        if (this.parentIncident.getNotes().isEmpty()) {
+            view.setNote("", new Date(), this.view.getUsers().get(0), "");
+        }
+        this.view.dispose();
+        this.listController.showListView();
+    }
+
+    public boolean validateDate(String date){
+        int year;
+        int month;
+        int day;
+        try {
+            year = Integer.parseInt(date.split("/")[2]);
+            month = Integer.parseInt(date.split("/")[0]) - 1;
+            day = Integer.parseInt(date.split("/")[1]);
+        } catch (NumberFormatException e){
+            return false;
+        }
+        if (month > 11 || day > 31 || month < 0 || day < 1 || year < 1900){
+            return false;
+        }
+        List<Integer> thirty = List.of(3, 5, 8, 10);
+        if(thirty.contains(month) && day > 30){
+            JOptionPane.showMessageDialog(this.view, "Invalid day");
+            return false;
+        }
+        if(year % 4 == 0 && month == 1 && day > 29){
+            JOptionPane.showMessageDialog(this.view, "Invalid day");
+            return false;
+        }
+        if (year % 4 != 0 && month == 1 && day > 28) {
+            JOptionPane.showMessageDialog(this.view, "Invalid day");
+            return false;
+        }
+        return true;
     }
 }
