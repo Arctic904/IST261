@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class NoteController {
     private NotesList view;
@@ -88,6 +89,7 @@ public class NoteController {
             return;
         }
         this.parentIncident.getNotes().set(idx, updated);
+        this.listController.updatePersistence();
         JOptionPane.showMessageDialog(this.view, "Saved");
     }
 
@@ -103,10 +105,7 @@ public class NoteController {
     }
 
     private void NewUserBtnPressed(ActionEvent event){
-        String name = JOptionPane.showInputDialog("What is the user's name?");
-        String email = JOptionPane.showInputDialog("What is the user's email?");
-        String phone = JOptionPane.showInputDialog("What is the user's phone number?");
-        User created = new User(name, email, phone);
+        User created = User.CreateUserDialogue();
         List<User> users = this.view.getUsers();
         users.add(created);
         this.view.setUserSelection(users);

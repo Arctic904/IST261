@@ -11,14 +11,20 @@ import java.util.List;
 
 public class ListController {
     private NoteListView listView;
-    List<Note> notes = new ArrayList<>();
+    List<Note> notes;
     NoteTableModel noteTableModel;
     NoteController noteController;
     private Incident parentIncident;
     private List<User> usersList;
+    private UserPersistenceController userPersistenceController = new UserPersistenceController();
+    private IncidentPersistenceController incidentPersistenceController = new IncidentPersistenceController();
 
     public ListController() {
-        createInitialElements();
+//        createInitialElements();
+        this.usersList = userPersistenceController.getUsers();
+        List<Incident> incidents = incidentPersistenceController.getIncidents();
+        this.parentIncident = incidents.get(0);
+        this.notes = parentIncident.getNotes();
         this.noteTableModel = new NoteTableModel(notes);
         this.listView = new NoteListView(this);
         addActionListeners();
@@ -38,7 +44,7 @@ public class ListController {
 
     private void addActionListeners() {
         listView.getNewBtn().addActionListener(this::NewBtnListener);
-        listView.getDoneBtn().addActionListener(e -> System.exit(0));
+        listView.getDoneBtn().addActionListener(e -> {updatePersistence(); System.exit(0);});
         listView.getShowDetailsBtn().addActionListener(this::DetailsBtnListener);
         listView.getDeleteBtn().addActionListener(this::DeleteBtnListener);
     }
@@ -78,8 +84,18 @@ public class ListController {
         //show a detail view with the data for the selected element
         //pass the flow from list controller to details controller
         //do not instantiate the details view from this list controller
+        if(this.notes.isEmpty()){
+            this.notes.add(new Note(null, null, new Date(), null));
+        }
         this.noteController = new NoteController(this, this.notes.size()-1);
         this.noteController.NewNote();
+    }
+
+    public void updatePersistence() {
+        List<Incident> tempIncidents = new ArrayList<>();
+        tempIncidents.add(this.getParentIncident());
+        incidentPersistenceController.setIncidents(tempIncidents);
+        userPersistenceController.setUsers(this.getUsersList());
     }
 
     private void createInitialElements() {
@@ -105,5 +121,6 @@ public class ListController {
 
     public void showListView() {
         this.listView.setVisible(true);
+        updatePersistence();
     }
 }

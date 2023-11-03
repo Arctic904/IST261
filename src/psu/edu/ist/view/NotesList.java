@@ -84,16 +84,16 @@ public class NotesList extends JFrame{
     }
 
     public Note saveNote() {
-        int year = Integer.parseInt(creationDateTextInput.getText().split("/")[2]) - 1900;
-        int month = Integer.parseInt(creationDateTextInput.getText().split("/")[0]) - 1;
-        int day = Integer.parseInt(creationDateTextInput.getText().split("/")[1]);
+        int year = Integer.parseInt(getDate().split("/")[2]) - 1900;
+        int month = Integer.parseInt(getDate().split("/")[0]) - 1;
+        int day = Integer.parseInt(getDate().split("/")[1]);
         Date created = new Date(year, month, day);
         return new Note(this.titleTextInput.getText(), (User) this.userSelection.getSelectedItem(), created, this.contentTextInput.getText());
     }
 
     public void setNote(String title, Date created, User user, String content){
         this.titleTextInput.setText(title);
-        String dateString = (created.getMonth()+1) + "/" + created.getDay() + "/" + (created.getYear()+1900);
+        String dateString = (created.getMonth()+1) + "/" + created.getDate() + "/" + (created.getYear()+1900);
         this.creationDateTextInput.setText(dateString);
         if(users.contains(user)){
             userSelection.setSelectedItem(user);

@@ -1,8 +1,10 @@
 package psu.edu.ist.model;
 
+import javax.swing.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
     private String Name;
     private String Email;
     private String Phone;
@@ -61,5 +63,22 @@ public class User {
     public String toString() {
         return getName() + ", " + getEmail() + " - " + getPhone();
     }
+
+    public static User CreateUserDialogue() {
+        String name = JOptionPane.showInputDialog("What is the user's name?");
+        while (name.isEmpty()) {
+            name = JOptionPane.showInputDialog("What is the user's name? (Cannot be empty)");
+        }
+        String email = JOptionPane.showInputDialog("What is the user's email?");
+        while (email.isEmpty()) {
+            email = JOptionPane.showInputDialog("What is the user's email? (Cannot be empty)");
+        }
+        String phone = JOptionPane.showInputDialog("What is the user's phone number?");
+        while (phone.isEmpty()) {
+            phone = JOptionPane.showInputDialog("What is the user's phone number? (Cannot be empty)");
+        }
+        return new User(name, email, phone);
+    }
 }
+
 

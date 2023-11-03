@@ -1,9 +1,10 @@
 package psu.edu.ist.model;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Note {
+public class Note implements Serializable {
     private String Title;
     private User CreatedBy;
     private Date CreationDate;

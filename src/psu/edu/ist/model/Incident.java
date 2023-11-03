@@ -1,9 +1,11 @@
 package psu.edu.ist.model;
 
+import javax.swing.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Incident {
+public class Incident implements Serializable {
     private String Title;
     private String Description;
     private User CreatedBy;
@@ -95,6 +97,18 @@ public class Incident {
                 ", Type=" + Type +
                 ", Notes=" + Notes +
                 '}';
+    }
+
+    public static Incident CreateIncidentDialogue() {
+        String title = JOptionPane.showInputDialog("What is the title of the incident?");
+        while (title.isEmpty()) {
+            title = JOptionPane.showInputDialog("What is the title of the incident? (Cannot be empty)");
+        }
+        String description = JOptionPane.showInputDialog("What is the description for the incident?");
+        while (description.isEmpty()) {
+            description = JOptionPane.showInputDialog("What is the description for the incident? (Cannot be empty)");
+        }
+        return new Incident(title, description, null, psu.edu.ist.model.Severity.MEDIUM);
     }
 }
 
